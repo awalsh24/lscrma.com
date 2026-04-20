@@ -129,47 +129,35 @@
   }
 
 
-  /* ── Contact form: inline success message ─────────────────── */
-  var form        = document.getElementById('contactForm');
-  var formSuccess = document.getElementById('formSuccess');
-
-  if (form && formSuccess) {
-    form.addEventListener('submit', function (e) {
+  /* ── Contact form: Formspree submission ──────────────────── */
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async function(e) {
       e.preventDefault();
-
-      var requiredFields = form.querySelectorAll('[required]');
-      var allValid = true;
-
-      requiredFields.forEach(function (field) {
-        if (!field.value.trim()) {
-          allValid = false;
-          field.style.borderColor = '#E53E3E';
-          field.addEventListener('input', function () { field.style.borderColor = ''; }, { once: true });
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const successEl = document.getElementById('formSuccess');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      try {
+        const response = await fetch('https://formspree.io/f/mqewlrgb', {
+          method: 'POST',
+          body: new FormData(contactForm),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (response.ok) {
+          contactForm.reset();
+          successEl.removeAttribute('hidden');
+          submitBtn.textContent = 'Sent!';
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Message';
+          alert('Something went wrong. Please try again or email John.Walsh@LSCRMA.com directly.');
         }
-      });
-
-      var emailField = form.querySelector('[type="email"]');
-      if (emailField && emailField.value.trim()) {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value.trim())) {
-          allValid = false;
-          emailField.style.borderColor = '#E53E3E';
-          emailField.addEventListener('input', function () { emailField.style.borderColor = ''; }, { once: true });
-        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+        alert('Something went wrong. Please try again or email John.Walsh@LSCRMA.com directly.');
       }
-
-      if (!allValid) return;
-
-      var submitBtn = form.querySelector('[type="submit"]');
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Message Sent';
-        submitBtn.style.opacity = '0.7';
-      }
-
-      formSuccess.removeAttribute('hidden');
-      formSuccess.style.display = 'block';
-      formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      form.reset();
     });
   }
 

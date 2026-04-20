@@ -534,7 +534,9 @@
           <div class="contact__form-wrap fade-in">
             <div class="contact__form-band" aria-hidden="true"></div>
             <p class="contact__form-sub">We'll respond within one business day.</p>
-            <form class="contact__form" id="contactForm" novalidate aria-label="Contact form">
+            <form class="contact__form" id="contactForm" action="https://formspree.io/f/mqewlrgb" method="POST" aria-label="Contact form">
+              <input type="hidden" name="_subject" value="New Consultation Request — LSCRMA" />
+              <input type="hidden" name="_replyto" value="" />
               <div class="form-group">
                 <label for="fullName" class="form-label">Full Name</label>
                 <input type="text" id="fullName" name="fullName" class="form-input" required autocomplete="name" placeholder="Jane Smith" />
